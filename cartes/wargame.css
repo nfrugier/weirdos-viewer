@@ -85,8 +85,9 @@ body {
 }
 
 @media print {
-  #controls {
-    display: none;
+  #controls,
+  #controls * {
+    display: none !important;
   }
 
   body {
