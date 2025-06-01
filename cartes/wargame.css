@@ -1,0 +1,99 @@
+body {
+  font-family: "Helvetica Neue", sans-serif;
+  color: black;
+  padding: 0.5cm;
+}
+
+#card-sheet {
+  display: grid;
+  grid-template-columns: repeat(2, 120mm);
+  grid-auto-rows: 70mm;
+  gap: 3mm;
+  justify-content: center;
+}
+
+.card-unit {
+  width: 120mm;
+  height: 70mm;
+  border: 1px solid black;
+  border-radius: 3mm;
+  box-sizing: border-box;
+  padding: 4mm;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  background: white;
+  page-break-inside: avoid;
+  overflow: hidden;
+  box-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+}
+
+.card-unit h2 {
+  text-align: center;
+  font-size: 1.1rem;
+  margin-bottom: 2mm;
+  border: 1px solid black;
+  border-radius: 2mm;
+  padding: 1mm;
+  font-weight: bold;
+  background: #f0f0f0;
+}
+
+.stats-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2mm;
+  font-size: 0.8rem;
+  font-weight: bold;
+  gap: 1mm;
+}
+
+.traits-box {
+  border: 1px solid black;
+  border-radius: 2mm;
+  padding: 1mm;
+  font-size: 0.65rem;
+  font-style: italic;
+  text-align: left;
+  margin-bottom: 2mm;
+  overflow: hidden;
+  background: #fdfdfd;
+}
+
+.weapon-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.6rem;
+  background: white;
+}
+
+.weapon-table th,
+.weapon-table td {
+  border: 1px solid #444;
+  padding: 0.5mm 1mm;
+  text-align: center;
+}
+
+.card-unit.no-traits .weapon-table {
+  margin-top: 6mm;
+}
+
+.sort-card {
+  background: #f6f6f6;
+  border: 1px dashed #999;
+  font-style: normal;
+}
+
+@media print {
+  #controls {
+    display: none;
+  }
+
+  body {
+    padding: 0;
+  }
+
+  #card-sheet {
+    gap: 3mm !important;
+  }
+}

@@ -4,26 +4,38 @@
     <meta charset="UTF-8" />
     <title>Visualiseur Warband JSON</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="cartes/ui.css" />
   </head>
   <body>
     <div id="controls">
-    <h1>Visualiseur de Warband</h1>
-    <p>La bande doit être construite avec les builders officiels du jeu : <a href="https://spaceweirdo.netlify.app/warband">Space Weirdos</a> ou  <a href="https://sword-weirdos.netlify.app/warband">Sword Weirdos</a></p>
+      <div class="header-group">
+        <h1>Visualiseur de Warband</h1>
+        <p>La bande doit être construite avec les builders officiels du jeu : <a href="https://spaceweirdo.netlify.app/warband">Space Weirdos</a> ou  <a href="https://sword-weirdos.netlify.app/warband">Sword Weirdos</a></p>
+      </div>
+      <div class="button-bar">
+        <label style="display: none">Jeu :</label>
+        <div class="toggle-switch">
+          <input type="radio" id="switch-space" name="game" value="space" checked />
+          <input type="radio" id="switch-sword" name="game" value="sword" />
+          <div class="switch-labels">
+            <label for="switch-space">Space Weirdos</label>
+            <label for="switch-sword">Sword Weirdos</label>
+            <span class="slider"></span>
+          </div>
+        </div>
 
-<label><input type="checkbox" id="ecoMode" /> Mode impression économique</label>
+        <label for="bandName" style="display: none;"></label>
+        <input type="text" id="bandName" placeholder="Ma bande personnalisée" class="pill-btn" />
 
+        <label for="file" class="pill-btn" id="fileLabel">Choisir un fichier</label>
+        <input type="file" id="file" style="display:none;" />
 
-      <label>Jeu :</label>
-      <label><input type="radio" name="game" value="space" checked /> Space Weirdos</label>
-      <label><input type="radio" name="game" value="sword" /> Sword Weirdos</label>
+        <button onclick="window.print()" class="pill-btn">Imprimer</button>
+        <label><input type="checkbox" id="ecoMode" /> Mode impression économique
+        </label>
+        <a role="button" href="cartes/index.html" class="pill-btn">Générateur de cartes</a>
+      </div>
 
-      <label for="bandName">Nom de la bande :</label>
-      <input type="text" id="bandName" placeholder="Ma bande personnalisée" />
-
-      <label for="file">Fichier JSON :</label>
-      <input type="file" id="file" accept=".json" />
-
-      <button onclick="window.print()">🖨️ Imprimer</button>
     </div>
 
     <div id="output"></div>
@@ -244,5 +256,15 @@
       });
 
     </script>
+    <script>
+      document.getElementById('file').addEventListener('change', function (e) {
+        const label = document.getElementById('fileLabel');
+        const file = e.target.files[0];
+        label.innerHTML = file
+          ? `${file.name}`
+          : 'Choisir un fichier';
+      });
+    </script>
+
   </body>
 </html>

@@ -1,9 +1,7 @@
 body {
-  font-family: system-ui, sans-serif;
-  margin: 2rem;
-  background: #fafafa;
-  color: #222;
-  line-height: 1.5;
+  font-family: "Helvetica Neue", sans-serif;
+  color: black;
+  padding: 0.5cm;
 }
 
 input[type="file"],

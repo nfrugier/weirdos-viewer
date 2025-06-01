@@ -1,0 +1,57 @@
+body {
+  font-family: "Helvetica Neue", sans-serif;
+  color: black;
+  padding: 0.5cm;
+}
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 120mm);
+    grid-template-rows: repeat(auto-fill, 70mm);
+    gap: 1mm;
+    justify-content: center;
+  }
+
+  .card {
+    width: 120mm;
+    height: 70mm;
+    border: 1px solid #444;
+    box-sizing: border-box;
+    padding: 4mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    page-break-inside: avoid;
+    overflow: hidden;
+  }
+
+  .card h2 {
+    font-size: 1.1rem;
+    margin: 0 0 4mm 0;
+    text-align: center;
+  }
+
+  .stats, .weapons, .rules, .spells {
+    font-size: 0.8rem;
+    margin-bottom: 2mm;
+  }
+
+  @media print {
+    body {
+      padding: 0;
+    }
+
+    #controls {
+      display: none;
+    }
+
+    .card-grid {
+      gap: 0;
+      padding: 0;
+    }
+
+    .card {
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+  }
