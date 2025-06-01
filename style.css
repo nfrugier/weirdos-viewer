@@ -1,0 +1,166 @@
+body {
+  font-family: system-ui, sans-serif;
+  margin: 2rem;
+  background: #fafafa;
+  color: #222;
+  line-height: 1.5;
+}
+
+input[type="file"],
+input[type="text"] {
+  margin: 0.5rem 0;
+  display: block;
+  font-size: 1rem;
+}
+
+.model {
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background-color: #fff;
+}
+
+.model.leader {
+  border-color: #aa5522;
+  background-color: #fff5e6;
+}
+
+h1 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+h2 {
+  font-size: 1.4rem;
+  margin-top: 2rem;
+}
+
+h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.3rem;
+  font-size: 1rem;
+}
+
+.trait {
+  background: #e9f2ff;
+  padding: 0.75rem;
+  border-left: 6px solid #3399ff;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  table-layout: fixed;
+}
+
+th,
+td {
+  border: 2px solid #bbb;
+  padding: 8px;
+  text-align: center;
+  word-wrap: break-word;
+}
+
+th {
+  background: #f0f0f0;
+  font-weight: 600;
+}
+
+input.name-input {
+  font-size: 1rem;
+  padding: 4px;
+  border: 1px solid #ccc;
+  width: 100%;
+  margin-bottom: 0.5rem;
+  font-family: inherit;
+}
+
+@media print {
+  #controls {
+    display: none !important;
+  }
+
+  .model {
+    page-break-inside: avoid;
+  }
+}
+
+
+@media print {
+  #controls {
+    display: none !important;
+  }
+
+  .model {
+    page-break-inside: avoid;
+    font-size: 0.85rem;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  h1, h2, h3 {
+    font-size: 1.1rem !important;
+    margin: 0.4rem 0;
+  }
+
+  table {
+    font-size: 0.75rem;
+  }
+
+  th, td {
+    padding: 4px;
+  }
+
+  input.name-input {
+    display: none !important;
+  }
+}
+
+th.col-points, td.col-points {
+  width: 60px;
+  max-width: 60px;
+  text-align: center;
+}
+
+th.col-weapon, td.col-weapon {
+  width: 120px;
+  max-width: 120px;
+  text-align: center;
+}
+
+
+
+/* Mode éco activable manuellement */
+body.eco {
+  background: white !important;
+  color: black !important;
+  font-family: serif;
+}
+
+body.eco th,
+body.eco td {
+  border: 1px solid #999 !important;
+  background: none !important;
+}
+
+body.eco .trait {
+  background: none !important;
+  border-left: 2px solid #666 !important;
+}
+
+body.eco .model.leader {
+  background-color: #fff !important;
+  border-color: #666 !important;
+}

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Visualiseur Warband JSON</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="controls">
+    <h1>Visualiseur de Warband</h1>
+    <p>La bande doit être construite avec les builders officiels du jeu : <a href="https://spaceweirdo.netlify.app/warband">Space Weirdos</a> ou  <a href="https://sword-weirdos.netlify.app/warband">Sword Weirdos</a></p>
+
+<label><input type="checkbox" id="ecoMode" /> Mode impression économique</label>
+
+
+      <label>Jeu :</label>
+      <label><input type="radio" name="game" value="space" checked /> Space Weirdos</label>
+      <label><input type="radio" name="game" value="sword" /> Sword Weirdos</label>
+
+      <label for="bandName">Nom de la bande :</label>
+      <input type="text" id="bandName" placeholder="Ma bande personnalisée" />
+
+      <label for="file">Fichier JSON :</label>
+      <input type="file" id="file" accept=".json" />
+
+      <button onclick="window.print()">🖨️ Imprimer</button>
+    </div>
+
+    <div id="output"></div>
+
+    <script>
+      const fileInput = document.getElementById("file");
+      const output = document.getElementById("output");
+
+      function getGameType() {
+        return document.querySelector('input[name="game"]:checked').value;
+      }
+
+      fileInput.addEventListener("change", function () {
+        const file = this.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          try {
+            const data = JSON.parse(e.target.result);
+            const game = getGameType();
+            output.innerHTML = "";
+            if (game === "space") {
+              renderSpaceWeirdos(data);
+            } else {
+              renderSwordWeirdos(data);
+            }
+          } catch (err) {
+            console.error(err);
+            output.innerHTML = "<p style='color:red;'>Erreur : JSON invalide</p>";
+          }
+        };
+        reader.readAsText(file);
+      });
+
+      function setupLiveRename() {
+        const bandTitle = document.getElementById("bandTitle");
+        const bandNameInput = document.getElementById("bandName");
+        if (bandTitle && bandNameInput) {
+          bandNameInput.addEventListener("input", e => {
+            bandTitle.innerHTML = `${e.target.value || 'Sans nom'} (${bandTitle.dataset.points} pts)`;
+          });
+        }
+
+        document.querySelectorAll('.name-input').forEach(input => {
+          input.addEventListener('input', e => {
+            const id = e.target.dataset.target;
+            const target = document.getElementById(id);
+            if (target) {
+              const isLeader = target.innerHTML.includes('(Leader');
+              target.innerHTML = `${e.target.value} ${isLeader ? '<em>(Leader)</em>' : ''}`;
+            }
+          });
+        });
+      }
+
+      function renderSpaceWeirdos(data) {
+        const wb = data.warband;
+        const bandName = document.getElementById('bandName').value || 'Sans nom';
+        let html = `<h2 id="bandTitle" data-points="${data.warbandPoints ?? '?'}">${bandName} (${data.warbandPoints ?? '?'} pts)</h2>`;
+        if (data.warbandTrait?.effect) {
+          html += `<div class="trait"><strong>Trait :</strong> ${data.warbandTrait.effect}</div>`;
+        }
+
+        wb.forEach(m => {
+          html += `<div class="model ${m.isleader ? 'leader' : ''}">`;
+          html += `
+            <label class="label">Nom :</label>
+            <input type="text" value="${m.Name}" class="name-input" data-target="name-${m.index}" />
+            <h3 id="name-${m.index}">${m.Name} ${m.isleader ? '<em>(Leader)</em>' : ''}</h3>`;
+
+          html += `
+            <div><span class="label">Statistiques :</span>
+            <table>
+              <thead><tr><th>Vitesse</th><th>Défense</th><th>Puissance de feu</th><th>Prouesse</th><th>Volonté</th></tr></thead>
+              <tbody><tr>
+                <td>${m.speed?.name ?? '-'}</td>
+                <td>${m.defense?.name ?? '-'}</td>
+                <td>${m.firepower?.name ?? '-'}</td>
+                <td>${m.prowess?.name ?? '-'}</td>
+                <td>${m.willpower?.name ?? '-'}</td>
+              </tr></tbody>
+            </table></div>`;
+
+          if (m.rangedWeapon?.name && m.rangedWeapon?.name !== "none") {
+            html += `
+              <div><span class="label">Arme à distance :</span>
+              <table>
+                <thead><tr><th class="col-weapon">Nom</th><th class="col-points">Tirs max</th><th>Effets</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td>${m.rangedWeapon.name}</td>
+                    <td>${m.rangedWeapon.maxshoot ?? '–'}</td>
+                    <td>${m.rangedWeapon.notes ?? ''}</td>
+                  </tr>
+                </tbody>
+              </table></div>`;
+          }
+
+          if (m.ccWeapon?.name && m.ccWeapon?.name !== "none") {
+            html += `
+              <div><span class="label">Arme de mêlée :</span>
+              <table>
+                <thead><tr><th class="col-weapon">Nom</th><th class="col-points">Combats max</th><th>Effets</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td>${m.ccWeapon.name}</td>
+                    <td>${m.ccWeapon.maxfight ?? '–'}</td>
+                    <td>${m.ccWeapon.notes ?? ''}</td>
+                  </tr>
+                </tbody>
+              </table></div>`;
+          }
+
+          html += `<p><span class="label">Équipements :</span><ul>`;
+          if (m.equipment?.name !== "none") html += `<li>${m.equipment.name}: ${m.equipment.effect}</li>`;
+          if (m.equipment2?.name !== "none") html += `<li>${m.equipment2.name}: ${m.equipment2.effect}</li>`;
+          html += `</ul></p>`;
+
+          if (m.leaderTrait) {
+            html += `<p><strong>Leader Trait :</strong> ${m.leaderTrait.name} – ${m.leaderTrait.power}</p>`;
+          }
+
+          html += `</div>`;
+        });
+
+        output.innerHTML = html;
+        setupLiveRename();
+      }
+
+      function renderSwordWeirdos(data) {
+        const wb = data.warband;
+        const bandName = document.getElementById('bandName').value || 'Sans nom';
+        let html = `<h2 id="bandTitle" data-points="${data.warbandPoints ?? '?'}">${bandName} (${data.warbandPoints ?? '?'} pts)</h2>`;
+        if (data.warbandTrait?.effect) {
+          html += `<div class="trait"><strong>Trait :</strong> ${data.warbandTrait.effect}</div>`;
+        }
+
+        wb.forEach(m => {
+          html += `<div class="model ${m.isleader ? 'leader' : ''}">`;
+          html += `
+            <label class="label">Nom :</label>
+            <input type="text" value="${m.Name}" class="name-input" data-target="name-${m.index}" />
+            <h3 id="name-${m.index}">${m.Name} ${m.isleader ? '<em>(Leader)</em>' : ''}</h3>`;
+
+          html += `
+            <div><span class="label">Statistiques :</span>
+            <table>
+              <thead><tr><th>Vitesse</th><th>Défense</th><th>Puissance</th><th>Volonté</th></tr></thead>
+              <tbody><tr>
+                <td>${m.speed?.name ?? '-'}</td>
+                <td>${m.defense?.name ?? '-'}</td>
+                <td>${m.might?.name ?? '-'}</td>
+                <td>${m.willpower?.name ?? '-'}</td>
+              </tr></tbody>
+            </table></div>`;
+
+          html += `<div><span class="label">Classes :</span><table>
+            <thead><tr><th class="col-weapon">Nom</th><th class="col-points">Points</th><th>Compétences</th><th>Notes</th></tr></thead><tbody>`;
+
+          const classes = [m.class, (m.class2 && m.class2.name !== "None") ? m.class2 : null].filter(Boolean);
+          classes.forEach(c => {
+            html += `<tr>
+              <td>${c.name}</td>
+              <td>${c.point}</td>
+              <td>${(c.proficiencies || []).join(", ")}</td>
+              <td>${c.notes}</td>
+            </tr>`;
+          });
+
+          html += `</tbody></table></div>`;
+
+          if (m.Weapons?.length > 0) {
+            html += `<div><span class="label">Armes :</span><table>
+              <thead><tr><th class="col-weapon">Nom</th><th>Type</th><th>Mains</th><th>Propriétés</th><th>Manœuvres</th></tr></thead><tbody>`;
+
+            m.Weapons.forEach(w => {
+              html += `<tr>
+                <td>${w.name}</td>
+                <td>${w.type}</td>
+                <td>${w.hands}</td>
+                <td>${(w.properties || []).join(', ')}</td>
+                <td>${(w.maneuvers || []).join(', ')}</td>
+              </tr>`;
+            });
+
+            html += `</tbody></table></div>`;
+          }
+
+          if (m.spells?.length) {
+            html += `<div><span class="label">Sorts :</span><table>
+              <thead><tr><th class="col-weapon">Nom</th><th>Effet</th><th class="col-points">Points</th></tr></thead><tbody>`;
+
+            m.spells.forEach(s => {
+              html += `<tr>
+                <td>${s.name}</td>
+                <td>${s.notes}</td>
+                <td>${s.point ?? 0}</td>
+              </tr>`;
+            });
+
+            html += `</tbody></table></div>`;
+          }
+
+          if (m.leaderTrait) {
+            html += `<p><strong>Leader Trait :</strong> ${m.leaderTrait.name} – ${m.leaderTrait.power}</p>`;
+          }
+
+          html += `</div>`;
+        });
+
+        output.innerHTML = html;
+        setupLiveRename();
+      }
+
+      document.getElementById('ecoMode').addEventListener('change', (e) => {
+        document.body.classList.toggle('eco', e.target.checked);
+      });
+
+    </script>
+  </body>
+</html>
